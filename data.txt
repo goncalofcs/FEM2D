@@ -1,0 +1,26 @@
+# DADOS DO MATERIAL
+
+*MATERIAL
+# E [Pa]; A [m²]
+120e9; 100e-6
+
+*NODES
+# id; x [m]; y [m]
+0; 0.0; 0.0
+1; 0.0; 0.8
+2; 0.6; 0.0
+
+*ELEMENTS
+# id; nó inicial; nó final
+0; 0; 1
+1; 1; 2
+
+*FORCES
+# nó, Fx [N], Fy [N]
+2; 3000.0; -4000.0
+
+*BOUNDARY CONDITIONS
+# nó; fixo em x; fixo em y; deslocamento em x; deslocamento em y (se fixo = 1; se livre = 0)
+0; 1; 1; 0.0; 0.0
+1; 1; 0; 0.0; 0.0
+2; 0; 0; 0.0; 0.0
