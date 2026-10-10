@@ -71,7 +71,7 @@ class Reader:
         return self._forces
     
     
-reader = Reader("texto.txt")
+reader = Reader("data.txt")
 print(reader.get_material())
 print(reader.get_nodes())
 print(reader.get_elements())
