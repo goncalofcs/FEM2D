@@ -125,7 +125,85 @@ class FEM2D:
             R = K @ u - F
             return u, R
 
-model = FEM2D()
+def load_model(filename):
+    model = FEM2D()
+    section = None
+
+    E = None
+    A = None
+
+    with open(filename, "r", encoding="utf-8") as file:
+        for line_number, line in enumerate(file, start=1):
+
+            # Ignorar comentários e linhas vazias
+            line = line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            # Identificar a secção atual
+            if line.startswith("*"):
+                section = line.upper()
+                continue
+
+            # Separar os valores pelo ponto e vírgula
+            values = [value.strip() for value in line.split(";")]
+
+            try:
+                if section == "*MATERIAL":
+                    E = float(values[0])
+                    A = float(values[1])
+
+                elif section == "*NODES":
+                    node_id = int(values[0])
+                    x = float(values[1])
+                    y = float(values[2])
+
+                    model.add_node(node_id, x, y)
+
+                elif section == "*ELEMENTS":
+                    element_id = int(values[0])
+                    node_i = int(values[1])
+                    node_j = int(values[2])
+
+                    if E is None or A is None:
+                        raise ValueError(
+                            "O material tem de ser definido antes dos elementos."
+                        )
+
+                    model.add_element(
+                        element_id, node_i, node_j, E, A
+                    )
+
+                elif section == "*BOUNDARY_CONDITIONS":
+                    node = int(values[0])
+                    direction = values[1].lower()
+                    displacement = float(values[2])
+
+                    model.add_boundary_conditions(
+                        node, direction, displacement
+                    )
+
+                elif section == "*FORCES":
+                    node = int(values[0])
+                    fx = float(values[1])
+                    fy = float(values[2])
+
+                    model.add_forces(node, "x", fx)
+                    model.add_forces(node, "y", fy)
+
+            except (ValueError, IndexError) as error:
+                raise ValueError(
+                    f"Erro na linha {line_number}: {line}"
+                ) from error
+
+    if E is None or A is None:
+        raise ValueError("A secção *MATERIAL está ausente ou incompleta.")
+
+    return model
+
+
+model = load_model()
 
 model.add_node(0, 1.35, 1.1) 
 model.add_node(1, 2.25, 1.1) 
@@ -155,20 +233,19 @@ model.add_forces(5, 'y', -5000)
 model.add_boundary_conditions(6, 'x', 0)
 model.add_boundary_conditions(6, 'y', 0)
 model.add_boundary_conditions(2, 'y', 0)
-
+model.add_boundary_conditions(3,'y',-0.002)
 #print(model.global_stiffness_matrix())
 
 u,R = model.solve()
-print(u)
-
-'''
+#print(u)
 print(R)
 
+'''
 tensao = []
-for i in range(3):
+for i in range(11):
     sigma = model.elements_list[i].calculate_stress(u,model.nodes)
     tensao.append(float(sigma))
 print(tensao)
+'''
 
 #elements_sig_rounded = np.round(elements_sig / 1e6, 2)
-'''
