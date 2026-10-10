@@ -1,3 +1,4 @@
+
 class Reader:
     def __init__(self, filename):
         self.filename = filename
@@ -5,6 +6,7 @@ class Reader:
         self._material = {}
         self._nodes = {}
         self._elements = []
+        self._degrees_of_freedom = {}
         self._forces = {}
         self._boundary_conditions = {}
         
@@ -40,6 +42,12 @@ class Reader:
                     node_init, node_final = int(data[1]), int(data[2])
                     self._elements.append((element_id, node_init, node_final))
                 
+                elif section == "DEGREES OF FREEDOM":
+                    node_id = int(data[0])
+                    fix_x = int(data[1])
+                    fix_y = int(data[2])
+                    self._degrees_of_freedom[node_id] = (fix_x, fix_y)
+                    
                 elif section == "FORCES":
                     node_id = int(data[0])
                     Fx, Fy = float(data[1]), float(data[2])
@@ -48,12 +56,9 @@ class Reader:
                     
                 elif section == "BOUNDARY CONDITIONS":
                     node_id = int(data[0])
-                    fix_x, fix_y = int(data[1]), int(data[2])
-                    ux, uy = float(data[3]), float(data[4])
-                    if fix_x == 1:
-                        self._boundary_conditions[(node_id, "x")] = ux
-                    if fix_y == 1:
-                        self._boundary_conditions[(node_id, "y")] = uy
+                    ux = float(data[1])
+                    uy = float(data[2])
+                    self._boundary_conditions[node_id] = (ux, uy)
                         
     def get_material(self):
         return self._material
@@ -64,16 +69,20 @@ class Reader:
     def get_elements(self):
         return self._elements
     
-    def get_boundary_conditions(self):
-        return self._boundary_conditions
+    def get_degrees_of_freedom(self):
+        return self._degrees_of_freedom
     
     def get_forces(self):
         return self._forces
     
+    def get_boundary_conditions(self):
+        return self._boundary_conditions
+
     
 reader = Reader("data.txt")
 print(reader.get_material())
 print(reader.get_nodes())
 print(reader.get_elements())
+print(reader.get_degrees_of_freedom())
 print(reader.get_forces())
 print(reader.get_boundary_conditions())

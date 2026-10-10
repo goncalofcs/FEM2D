@@ -15,12 +15,18 @@
 0; 0; 1
 1; 1; 2
 
+*DEGREES OF FREEDOM
+# nó; fixo em x; fixo em y (se fixo = 1; se livre = 0)
+0; 1; 1
+1; 1; 0
+2; 0; 0
+
 *FORCES
 # nó, Fx [N], Fy [N]
 2; 3000.0; -4000.0
 
 *BOUNDARY CONDITIONS
-# nó; fixo em x; fixo em y; deslocamento em x; deslocamento em y (se fixo = 1; se livre = 0)
-0; 1; 1; 0.0; 0.0
-1; 1; 0; 0.0; 0.0
-2; 0; 0; 0.0; 0.0
+# nó; deslocamento em x; deslocamento em y
+0; 0.0; 0.0
+1; 0.0; 0.0
+2; 0.0; 0.0
