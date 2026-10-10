@@ -203,8 +203,13 @@ def load_model(filename):
     return model
 
 
-model = load_model()
+model = load_model("data.txt")
 
+u,R = model.solve()
+print(u)
+print(R)
+
+'''
 model.add_node(0, 1.35, 1.1) 
 model.add_node(1, 2.25, 1.1) 
 model.add_node(2, 2.7, 0)
@@ -239,6 +244,7 @@ model.add_boundary_conditions(3,'y',-0.002)
 u,R = model.solve()
 #print(u)
 print(R)
+'''
 
 '''
 tensao = []
