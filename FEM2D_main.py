@@ -1,6 +1,6 @@
 import numpy as np
 
-np.set_printoptions(precision=6, suppress=True)
+np.set_printoptions(precision=8, suppress=True)
 
 class Element2D:
     def __init__(self, element_id, node_i, node_j, E, A):
@@ -127,26 +127,41 @@ class FEM2D:
 
 model = FEM2D()
 
-model.add_node(0, 0, 0) # B
-model.add_node(1, 0, 0.8) # C
-model.add_node(2, 0.6, 0) # D
+model.add_node(0, 1.35, 1.1) 
+model.add_node(1, 2.25, 1.1) 
+model.add_node(2, 2.7, 0)
+model.add_node(3, 1.8, 0)
+model.add_node(4, 0.45, 1.1)
+model.add_node(5, 0.9, 0)
+model.add_node(6, 0, 0)
 
-model.add_element(0, 0, 1, 120e9, 100e-6)
-model.add_element(1, 1, 2, 120e9, 100e-6)
-model.add_element(2, 0, 2, 120e9, 100e-6)
+model.add_element(0, 0, 1, 70e9, 560e-6)
+model.add_element(1, 1, 2, 70e9, 560e-6)
+model.add_element(2, 3, 2, 70e9, 560e-6)
+model.add_element(3, 3, 1, 70e9, 560e-6)
+model.add_element(4, 4, 0, 70e9, 560e-6)
+model.add_element(5, 4, 5, 70e9, 560e-6)
+model.add_element(6, 5, 3, 70e9, 560e-6)
+model.add_element(7, 0, 3, 70e9, 560e-6)
+model.add_element(8, 5, 0, 70e9, 560e-6)
+model.add_element(9, 6, 5, 70e9, 560e-6)
+model.add_element(10, 6, 4, 70e9, 560e-6)
 
-model.add_forces(2, 'x', 3000)
-model.add_forces(2, 'y', -4000)
+model.add_forces(0, 'y', -3000)
+model.add_forces(1, 'x', 3000)
+model.add_forces(4, 'y', -5000)
+model.add_forces(5, 'y', -5000)
 
-model.add_boundary_conditions(0, 'x', 0)
-model.add_boundary_conditions(0, 'y', 0)
+model.add_boundary_conditions(6, 'x', 0)
+model.add_boundary_conditions(6, 'y', 0)
+model.add_boundary_conditions(2, 'y', 0)
 
-model.add_boundary_conditions(1, 'x', 0)
-
-print(model.global_stiffness_matrix())
+#print(model.global_stiffness_matrix())
 
 u,R = model.solve()
 print(u)
+
+'''
 print(R)
 
 tensao = []
@@ -156,3 +171,4 @@ for i in range(3):
 print(tensao)
 
 #elements_sig_rounded = np.round(elements_sig / 1e6, 2)
+'''
