@@ -1,5 +1,7 @@
 import numpy as np
 
+import matplotlib.pyplot as plt  
+
 np.set_printoptions(precision=8, suppress=True)
 
 class Element2D:
@@ -125,19 +127,19 @@ class FEM2D:
             R = K @ u - F
             return u, R
 
+
 def load_model(filename):
     model = FEM2D()
     section = None
-
     E = None
     A = None
 
     with open(filename, "r", encoding="utf-8") as file:
         for line_number, line in enumerate(file, start=1):
 
+            # limpa o texto de espaços invisiveis
+            line = line.strip()  
             # Ignorar comentários e linhas vazias
-            line = line.strip()
-
             if not line or line.startswith("#"):
                 continue
 
@@ -148,110 +150,138 @@ def load_model(filename):
 
             # Separar os valores pelo ponto e vírgula
             values = [value.strip() for value in line.split(";")]
+            # value.strip limpa dados, ex: ' 0.8' -> '0.8'
+            
+            if section == "*MATERIAL":
+                E = float(values[0])
+                A = float(values[1])
 
-            try:
-                if section == "*MATERIAL":
-                    E = float(values[0])
-                    A = float(values[1])
+            elif section == "*NODES":
+                node_id = int(values[0])
+                x = float(values[1])
+                y = float(values[2])
 
-                elif section == "*NODES":
-                    node_id = int(values[0])
-                    x = float(values[1])
-                    y = float(values[2])
+                model.add_node(node_id, x, y)
 
-                    model.add_node(node_id, x, y)
+            elif section == "*ELEMENTS":
+                element_id = int(values[0])
+                node_i = int(values[1])
+                node_j = int(values[2])
 
-                elif section == "*ELEMENTS":
-                    element_id = int(values[0])
-                    node_i = int(values[1])
-                    node_j = int(values[2])
+                model.add_element(element_id, node_i, node_j, E, A)
 
-                    if E is None or A is None:
-                        raise ValueError(
-                            "O material tem de ser definido antes dos elementos."
-                        )
+            elif section == "*BOUNDARY_CONDITIONS":
+                node = int(values[0])
+                direction = values[1].lower()
+                displacement = float(values[2])
 
-                    model.add_element(
-                        element_id, node_i, node_j, E, A
-                    )
+                model.add_boundary_conditions(node, direction, displacement)
 
-                elif section == "*BOUNDARY_CONDITIONS":
-                    node = int(values[0])
-                    direction = values[1].lower()
-                    displacement = float(values[2])
+            elif section == "*FORCES":
+                node = int(values[0])
+                fx = float(values[1])
+                fy = float(values[2])
 
-                    model.add_boundary_conditions(
-                        node, direction, displacement
-                    )
+                model.add_forces(node, "x", fx)
+                model.add_forces(node, "y", fy)
 
-                elif section == "*FORCES":
-                    node = int(values[0])
-                    fx = float(values[1])
-                    fy = float(values[2])
-
-                    model.add_forces(node, "x", fx)
-                    model.add_forces(node, "y", fy)
-
-            except (ValueError, IndexError) as error:
-                raise ValueError(
-                    f"Erro na linha {line_number}: {line}"
-                ) from error
-
-    if E is None or A is None:
-        raise ValueError("A secção *MATERIAL está ausente ou incompleta.")
+            else:
+                return print("Error")
 
     return model
 
 
 model = load_model("data.txt")
 
-u,R = model.solve()
-print(u)
-print(R)
 
-'''
-model.add_node(0, 1.35, 1.1) 
-model.add_node(1, 2.25, 1.1) 
-model.add_node(2, 2.7, 0)
-model.add_node(3, 1.8, 0)
-model.add_node(4, 0.45, 1.1)
-model.add_node(5, 0.9, 0)
-model.add_node(6, 0, 0)
-
-model.add_element(0, 0, 1, 70e9, 560e-6)
-model.add_element(1, 1, 2, 70e9, 560e-6)
-model.add_element(2, 3, 2, 70e9, 560e-6)
-model.add_element(3, 3, 1, 70e9, 560e-6)
-model.add_element(4, 4, 0, 70e9, 560e-6)
-model.add_element(5, 4, 5, 70e9, 560e-6)
-model.add_element(6, 5, 3, 70e9, 560e-6)
-model.add_element(7, 0, 3, 70e9, 560e-6)
-model.add_element(8, 5, 0, 70e9, 560e-6)
-model.add_element(9, 6, 5, 70e9, 560e-6)
-model.add_element(10, 6, 4, 70e9, 560e-6)
-
-model.add_forces(0, 'y', -3000)
-model.add_forces(1, 'x', 3000)
-model.add_forces(4, 'y', -5000)
-model.add_forces(5, 'y', -5000)
-
-model.add_boundary_conditions(6, 'x', 0)
-model.add_boundary_conditions(6, 'y', 0)
-model.add_boundary_conditions(2, 'y', 0)
-model.add_boundary_conditions(3,'y',-0.002)
 #print(model.global_stiffness_matrix())
 
 u,R = model.solve()
-#print(u)
-print(R)
-'''
 
-'''
 tensao = []
-for i in range(11):
+for i in range(len(model.elements_list)):
     sigma = model.elements_list[i].calculate_stress(u,model.nodes)
     tensao.append(float(sigma))
-print(tensao)
-'''
+    
+nodes_def = {}
+for n in range(len(model.nodes)):
+    xi, yi = model.nodes[n]
+    xf = xi + u[2*n]
+    yf = yi + u[2*n+1]
+    nodes_def[n] = xf, yf
+    
+# results presentation
+print("RESULTS")
+print("")
+print("Displacements (u)")
+for n in range(len(model.nodes)):
+    disp = np.round(u[n]*1e3,3)
+    print(f"node {n+1}: {disp} mm")
+print("")
+print("----//----")
+print("")
+print("Deformed Configuration")
+for n in range(len(model.nodes)):
+    x,y = np.round(nodes_def[n],6)
+    print(f"node {n+1}: {x,y} m")
+print("")
+print("----//----")
+print("")
+print("Reaction Forces (R)")
+for n in range(len(model.nodes)):
+    reaction_x=np.round(R[2*n], 1)
+    reaction_y=np.round(R[2*n+1], 1)
+    print(f"node {n+1}: ({reaction_x}, {reaction_y}) N")
+print("")
+print("----//----")
+print("")
+print("Stress (S11)")
+for n in range(len(model.elements_list)):
+    stress=np.round(tensao[n]/1e6, 1)
+    print(f"element {n+1}: {stress} MPa")
+    
+print("")   
+print("")
+print("============//=============")
+print("============//=============")
+print("")
 
-#elements_sig_rounded = np.round(elements_sig / 1e6, 2)
+model_2 = model
+model_2.add_boundary_conditions(3, 'y', -0.002) 
+u_2,R_2 = model_2.solve()
+model_3 = model_2
+model_3.add_boundary_conditions(3, 'x', 0)
+u_3,R_3 = model_3.solve()
+
+print("Solution situation uD_y= -2mm")
+print("node D is node 4")
+# in calculus node 3
+FD2 = np.round(R_2[3*2+1],2)
+print(f"(assuming there is uD_x) FD = {FD2} N")
+FD3 = np.round(R_3[3*2+1],2)
+print(f"(assuming there isn't uD_x) FD = {FD3} N")
+
+#figure deformed configuration
+plt.figure(figsize=(10, 5))
+scale = 500  # Scale up deformation to see it clearly
+
+for element in model.elements_list:
+    n1 = element.node_i
+    n2 = element.node_j
+    
+    # Original Structure
+    plt.plot([model.nodes[n1][0], model.nodes[n2][0]],
+             [model.nodes[n1][1], model.nodes[n2][1]], 'bo-', alpha=0.8, label='Original' if element==model.elements_list[0] else "")
+    
+    # Deformed Structure
+    x_def = [model.nodes[n1][0] + u[2*n1]*scale, model.nodes[n2][0] + u[2*n2]*scale]
+    y_def = [model.nodes[n1][1] + u[2*n1+1]*scale, model.nodes[n2][1] + u[2*n2+1]*scale]
+    plt.plot(x_def, y_def, 'r--o', label=f'Deformada ({scale}x)' if element==model.elements_list[0] else "")
+
+plt.title("Análise da Estrutura Deformada")
+plt.legend()
+plt.axis('off')
+plt.show()
+
+
+
