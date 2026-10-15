@@ -1,8 +1,9 @@
 import numpy as np
-
 import matplotlib.pyplot as plt  
+from reader import Reader
 
 np.set_printoptions(precision=8, suppress=True)
+
 
 class Element2D:
     def __init__(self, element_id, node_i, node_j, E, A):
@@ -128,70 +129,10 @@ class FEM2D:
             return u, R
 
 
-def load_model(filename):
-    model = FEM2D()
-    section = None
-    E = None
-    A = None
+model = FEM2D()
+reader = Reader(filename="FEM2D/data.txt")
 
-    with open(filename, "r", encoding="utf-8") as file:
-        for line_number, line in enumerate(file, start=1):
-
-            # limpa o texto de espaços invisiveis
-            line = line.strip()  
-            # Ignorar comentários e linhas vazias
-            if not line or line.startswith("#"):
-                continue
-
-            # Identificar a secção atual
-            if line.startswith("*"):
-                section = line.upper()
-                continue
-
-            # Separar os valores pelo ponto e vírgula
-            values = [value.strip() for value in line.split(";")]
-            # value.strip limpa dados, ex: ' 0.8' -> '0.8'
-            
-            if section == "*MATERIAL":
-                E = float(values[0])
-                A = float(values[1])
-
-            elif section == "*NODES":
-                node_id = int(values[0])
-                x = float(values[1])
-                y = float(values[2])
-
-                model.add_node(node_id, x, y)
-
-            elif section == "*ELEMENTS":
-                element_id = int(values[0])
-                node_i = int(values[1])
-                node_j = int(values[2])
-
-                model.add_element(element_id, node_i, node_j, E, A)
-
-            elif section == "*BOUNDARY_CONDITIONS":
-                node = int(values[0])
-                direction = values[1].lower()
-                displacement = float(values[2])
-
-                model.add_boundary_conditions(node, direction, displacement)
-
-            elif section == "*FORCES":
-                node = int(values[0])
-                fx = float(values[1])
-                fy = float(values[2])
-
-                model.add_forces(node, "x", fx)
-                model.add_forces(node, "y", fy)
-
-            else:
-                return print("Error")
-
-    return model
-
-
-model = load_model("data.txt")
+model = reader.load_model(model)
 
 
 #print(model.global_stiffness_matrix())
@@ -222,8 +163,9 @@ print("----//----")
 print("")
 print("Deformed Configuration")
 for n in range(len(model.nodes)):
-    x,y = np.round(nodes_def[n],6)
-    print(f"node {n+1}: {x,y} m")
+    x, y = np.round(nodes_def[n], 6)
+    print(f"node {n+1}: ({x}, {y}) m")
+
 print("")
 print("----//----")
 print("")
