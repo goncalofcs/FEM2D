@@ -90,7 +90,6 @@ class Reader:
         return self._boundary_conditions
 
     def load_model(self, model):
-        """Popula um modelo FEM2D com os dados lidos do ficheiro."""
         for node_id, (x, y) in self.get_nodes().items():
             model.add_node(node_id, x, y)
 
