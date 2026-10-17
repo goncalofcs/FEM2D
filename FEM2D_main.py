@@ -130,7 +130,7 @@ class FEM2D:
 
 
 model = FEM2D()
-reader = Reader(filename="FEM2D/data.txt")
+reader = Reader(filename="data.txt")
 
 model = reader.load_model(model)
 
@@ -164,7 +164,7 @@ print("")
 print("Deformed Configuration")
 for n in range(len(model.nodes)):
     x,y = np.round(nodes_def[n],6)
-    print(f"node {n+1}: {x,y} m")
+    print(f"node {n+1}: ({x},{y}) m")
 print("")
 print("----//----")
 print("")
