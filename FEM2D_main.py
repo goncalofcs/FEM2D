@@ -154,21 +154,22 @@ for n in range(len(model.nodes)):
 # results presentation
 print("RESULTS")
 print("")
-print("Displacements (u)")
+print("Deslocamentos nodais")
 for n in range(len(model.nodes)):
-    disp = np.round(u[n]*1e3,3)
-    print(f"node {n+1}: {disp} mm")
+    disp_x = np.round(u[2*n] * 1e3, 3)
+    disp_y = np.round(u[2*n+1] * 1e3, 3)
+    print(f"node {n+1}: ux = {disp_x} mm, uy = {disp_y} mm")
 print("")
 print("----//----")
 print("")
-print("Deformed Configuration")
+print("Coordenadas da configuração deformada")
 for n in range(len(model.nodes)):
     x,y = np.round(nodes_def[n],6)
     print(f"node {n+1}: ({x},{y}) m")
 print("")
 print("----//----")
 print("")
-print("Reaction Forces (R)")
+print("Forças de reação (R)")
 for n in range(len(model.nodes)):
     reaction_x=np.round(R[2*n], 1)
     reaction_y=np.round(R[2*n+1], 1)
@@ -176,7 +177,7 @@ for n in range(len(model.nodes)):
 print("")
 print("----//----")
 print("")
-print("Stress (S11)")
+print("Tensão (S11)")
 for n in range(len(model.elements_list)):
     stress=np.round(tensao[n]/1e6, 1)
     print(f"element {n+1}: {stress} MPa")
@@ -190,17 +191,12 @@ print("")
 model_2 = model
 model_2.add_boundary_conditions(3, 'y', -0.002) 
 u_2,R_2 = model_2.solve()
-model_3 = model_2
-model_3.add_boundary_conditions(3, 'x', 0)
-u_3,R_3 = model_3.solve()
 
-print("Solution situation uD_y= -2mm")
-print("node D is node 4")
+print("Cálculo da força para uD_y= -2mm")
+print("O nó D é o node 4")
 # in calculus node 3
-FD2 = np.round(R_2[3*2+1],2)
+FD2 = np.round(R_2[2*3+1],2)
 print(f"(assuming there is uD_x) FD = {FD2} N")
-FD3 = np.round(R_3[3*2+1],2)
-print(f"(assuming there isn't uD_x) FD = {FD3} N")
 
 #figure deformed configuration
 plt.figure(figsize=(10, 5))
