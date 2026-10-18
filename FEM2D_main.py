@@ -289,6 +289,6 @@ def plot_configuration(ax, displacements, title):
 
 figure, axes = plt.subplots(1, 2, figsize=(18, 6))
 plot_configuration(axes[0], u, "Estrutura Deformada")
-plot_configuration(axes[1], u_2, "Estrutura Deformada um uD_y = -2 mm")
+plot_configuration(axes[1], u_2, "Estrutura Deformada com uD_y = -2 mm")
 figure.tight_layout()
 plt.show()
