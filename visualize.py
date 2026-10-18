@@ -10,7 +10,7 @@ class Visualize:
             node_i = element.node_i
             node_j = element.node_j
 
-            # coordenadas originais
+            # original coordinates
             x_orig = [
                 self.model.nodes[node_i][0],
                 self.model.nodes[node_j][0]
@@ -28,7 +28,7 @@ class Visualize:
                 label="Original" if index == 0 else ""
             )
 
-            # coordenadas deformadas
+            # deformed coordinates
             x_def = [
                 x_orig[0] + displacements[2 * node_i] * self.scale,
                 x_orig[1] + displacements[2 * node_j] * self.scale
@@ -47,7 +47,7 @@ class Visualize:
                 label=f"Deformada ({self.scale}x)" if index == 0 else ""
             )
 
-            # numeração dos elementos deformados
+            # deformed elements annotation
             subplot.annotate(
                 str(element.element_id + 1),
                 ((x_def[0] + x_def[1]) / 2, (y_def[0] + y_def[1]) / 2),
@@ -58,7 +58,7 @@ class Visualize:
                 bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.8)
             )
 
-        # numeração dos nós deslocados
+        # deformed nodes annotation
         for node_id, (x, y) in self.model.nodes.items():
             x_def = x + displacements[2 * node_id] * self.scale
             y_def = y + displacements[2 * node_id + 1] * self.scale

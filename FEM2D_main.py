@@ -22,7 +22,7 @@ class Element2D:
         dy = yj - yi
         
         theta = np.arctan2(dy, dx) #rad
-        #better than arctan because it solves for dx=0 --> theta = pi/2
+        # better than arctan because it solves for dx=0 --> theta = pi/2
         length = np.sqrt(dx**2 + dy**2)
         return theta, length
     
@@ -136,7 +136,7 @@ reader = Reader(filename="data.txt")
 model = reader.load_model(model)
 
 
-#print(model.global_stiffness_matrix())
+# print(model.global_stiffness_matrix())
 
 u,R = model.solve()
 

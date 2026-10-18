@@ -1,4 +1,4 @@
-# DADOS DO MATERIAL
+# DATA
 
 *MATERIAL
 # E [Pa]; A [m²]
@@ -15,7 +15,7 @@
 6; 0.0; 0.0
 
 *ELEMENTS
-# id; nó inicial; nó final
+# id; initial node; final node
 0; 0; 1
 1; 1; 2
 2; 3; 2
@@ -29,13 +29,13 @@
 10; 6; 4
 
 *BOUNDARY_CONDITIONS
-# nó; x/y; deslocamento
+# node; x/y; displacement
 6; x; 0
 6; y; 0
 2; y; 0
 
 *FORCES
-# nó, Fx [N], Fy [N]
+# node, Fx [N], Fy [N]
 0; 0.0; -3000.0
 1; 3000.0; 0.0
 4; 0.0; -5000.0
