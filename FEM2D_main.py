@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt  
 from reader import Reader
+from visualize import Visualize
 
 np.set_printoptions(precision=8, suppress=True)
 
@@ -118,7 +119,7 @@ class FEM2D:
             K_free = K[np.ix_(free_index, free_index)]
             K_fixed = K[np.ix_(free_index, fixed_index)]
             
-            # Resolver K_free * u_free = F_free - K_fixed * u_fixed
+            # Solve K_free * u_free = F_free - K_fixed * u_fixed
             u_free = np.linalg.solve(K_free, F[free_index] - K_fixed @ u_fixed)
             
             u = np.zeros(num_dofs)
@@ -212,83 +213,14 @@ print("O nó D é o nó 4")
 FD2 = np.round(R_2[2*3+1],2)
 print(f"Força em D = {FD2} N")
 
+
 # GRAPHIC VISUALIZATION
-scale = 150  # Scale up deformation to see it clearly
+visualizer = Visualize(model, scale=150)
 
-def plot_configuration(ax, displacements, title):
-    for index, element in enumerate(model.elements_list):
-        n1 = element.node_i
-        n2 = element.node_j
+fig, subplots = plt.subplots(1, 2, figsize=(18, 6))
 
-        ax.plot(
-            [model.nodes[n1][0], model.nodes[n2][0]],
-            [model.nodes[n1][1], model.nodes[n2][1]],
-            color="steelblue", linewidth=1.8, marker="o", markersize=5,
-            markerfacecolor="white", markeredgewidth=1.5,
-            label="Original" if index == 0 else ""
-        )
+visualizer.plot_configuration(subplots[0], u, "Estrutura Deformada", show_legend=False)
+visualizer.plot_configuration(subplots[1], u_2, "Estrutura Deformada com uD_y = -2 mm", show_legend=True)
 
-        x_def = [
-            model.nodes[n1][0] + displacements[2 * n1] * scale,
-            model.nodes[n2][0] + displacements[2 * n2] * scale
-        ]
-        y_def = [
-            model.nodes[n1][1] + displacements[2 * n1 + 1] * scale,
-            model.nodes[n2][1] + displacements[2 * n2 + 1] * scale
-        ]
-        ax.plot(
-            x_def, y_def, color="red", linestyle="--", linewidth=2,
-            marker="s", markersize=4.5,
-            label=f"Deformada ({scale}x)" if index == 0 else ""
-        )
-
-    for node_id, (x, y) in model.nodes.items():
-        ax.annotate(
-            str(node_id + 1), (x, y),
-            xytext=(-9, 7), textcoords="offset points",
-            color="midnightblue", fontsize=8, fontweight="bold",
-            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.85)
-        )
-
-        x_def = x + displacements[2 * node_id] * scale
-        y_def = y + displacements[2 * node_id + 1] * scale
-        ax.annotate(
-            str(node_id + 1), (x_def, y_def),
-            xytext=(6, -11), textcoords="offset points",
-            color="red", fontsize=8, fontweight="bold",
-            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.85)
-        )
-
-    for element in model.elements_list:
-        n1 = element.node_i
-        n2 = element.node_j
-        x1, y1 = model.nodes[n1]
-        x2, y2 = model.nodes[n2]
-        ax.annotate(
-            str(element.element_id + 1), ((x1 + x2) / 2, (y1 + y2) / 2),
-            xytext=(0, 5), textcoords="offset points",
-            color="steelblue", fontsize=8,
-            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.8)
-        )
-
-        x1 += displacements[2 * n1] * scale
-        y1 += displacements[2 * n1 + 1] * scale
-        x2 += displacements[2 * n2] * scale
-        y2 += displacements[2 * n2 + 1] * scale
-        ax.annotate(
-            str(element.element_id + 1), ((x1 + x2) / 2, (y1 + y2) / 2),
-            xytext=(0, -10), textcoords="offset points",
-            color="red", fontsize=8,
-            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.8)
-        )
-
-    ax.set_title(title)
-    ax.legend(frameon=True, facecolor="white", edgecolor="lightgray")
-    ax.axis("off")
-
-
-figure, axes = plt.subplots(1, 2, figsize=(18, 6))
-plot_configuration(axes[0], u, "Estrutura Deformada")
-plot_configuration(axes[1], u_2, "Estrutura Deformada com uD_y = -2 mm")
-figure.tight_layout()
+fig.tight_layout()
 plt.show()
