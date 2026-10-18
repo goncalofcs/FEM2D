@@ -210,7 +210,7 @@ u_2,R_2 = model_2.solve()
 print("Força para o deslocamento imposto uD_y = -2 mm")
 print("O nó D é o nó 4")
 # in calculus node 3
-FD2 = np.round(R_2[2*3+1],2)
+FD2 = np.round(R_2[2*3+1],0)
 print(f"Força em D = {FD2} N")
 
 
