@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt  
 from reader import Reader
+from visualize import Visualize
 
 np.set_printoptions(precision=8, suppress=True)
 
@@ -21,7 +22,7 @@ class Element2D:
         dy = yj - yi
         
         theta = np.arctan2(dy, dx) #rad
-        #better than arctan because it solves for dx=0 --> theta = pi/2
+        # better than arctan because it solves for dx=0 --> theta = pi/2
         length = np.sqrt(dx**2 + dy**2)
         return theta, length
     
@@ -118,7 +119,7 @@ class FEM2D:
             K_free = K[np.ix_(free_index, free_index)]
             K_fixed = K[np.ix_(free_index, fixed_index)]
             
-            # Resolver K_free * u_free = F_free - K_fixed * u_fixed
+            # Solve K_free * u_free = F_free - K_fixed * u_fixed
             u_free = np.linalg.solve(K_free, F[free_index] - K_fixed @ u_fixed)
             
             u = np.zeros(num_dofs)
@@ -135,7 +136,7 @@ reader = Reader(filename="data.txt")
 model = reader.load_model(model)
 
 
-#print(model.global_stiffness_matrix())
+# print(model.global_stiffness_matrix())
 
 u,R = model.solve()
 
@@ -152,77 +153,74 @@ for n in range(len(model.nodes)):
     nodes_def[n] = xf, yf
     
 # results presentation
-print("RESULTS")
+print("RESULTADOS")
 print("")
-print("Displacements (u)")
+print("Coordenadas da configuração original")
 for n in range(len(model.nodes)):
-    disp = np.round(u[n]*1e3,3)
-    print(f"node {n+1}: {disp} mm")
+    x = model.nodes[n][0]
+    y = model.nodes[n][1]
+    print(f"Nó {n + 1}: ({x},{y}) m")
 print("")
 print("----//----")
 print("")
-print("Deformed Configuration")
+print("Coordenadas da configuração deformada")
 for n in range(len(model.nodes)):
     x,y = np.round(nodes_def[n],6)
-    print(f"node {n+1}: ({x},{y}) m")
+    print(f"Nó {n+1}: ({x},{y}) m")
 print("")
 print("----//----")
 print("")
-print("Reaction Forces (R)")
+print("Deslocamentos nodais")
+for n in range(len(model.nodes)):
+    disp_x = np.round(u[2*n] * 1e3, 3)
+    disp_y = np.round(u[2*n+1] * 1e3, 3)
+    print(f"Nó {n+1}: ux = {disp_x} mm, uy = {disp_y} mm")
+print("")
+print("----//----")
+print("")
+print("Forças de reação (R)")
 for n in range(len(model.nodes)):
     reaction_x=np.round(R[2*n], 1)
     reaction_y=np.round(R[2*n+1], 1)
-    print(f"node {n+1}: ({reaction_x}, {reaction_y}) N")
+    print(f"Nó {n+1}: ({reaction_x}, {reaction_y}) N")
 print("")
 print("----//----")
 print("")
-print("Stress (S11)")
+print("Tensão (S11)")
 for n in range(len(model.elements_list)):
     stress=np.round(tensao[n]/1e6, 1)
-    print(f"element {n+1}: {stress} MPa")
-    
+    element = model.elements_list[n]
+    print(f"Elemento {n+1} ({element.node_i} --> {element.node_j}): {stress} MPa")
 print("")   
 print("")
 print("============//=============")
 print("============//=============")
 print("")
 
-model_2 = model
-model_2.add_boundary_conditions(3, 'y', -0.002) 
+# Second case: preserve the original forces and supports, and impose
+# an additional vertical displacement at node D (node ID 3).
+model_2 = FEM2D()
+model_2.nodes = {node_id: coordinates.copy() for node_id, coordinates in model.nodes.items()}
+model_2.elements_list = model.elements_list.copy()
+model_2.forces = model.forces.copy()
+model_2.boundary_conditions = model.boundary_conditions.copy()
+model_2.add_boundary_conditions(3, 'y', -0.002)
 u_2,R_2 = model_2.solve()
-model_3 = model_2
-model_3.add_boundary_conditions(3, 'x', 0)
-u_3,R_3 = model_3.solve()
 
-print("Solution situation uD_y= -2mm")
-print("node D is node 4")
+print("Força para o deslocamento imposto uD_y = -2 mm")
+print("O nó D é o nó 4")
 # in calculus node 3
-FD2 = np.round(R_2[3*2+1],2)
-print(f"(assuming there is uD_x) FD = {FD2} N")
-FD3 = np.round(R_3[3*2+1],2)
-print(f"(assuming there isn't uD_x) FD = {FD3} N")
+FD2 = np.round(R_2[2*3+1],2)
+print(f"Força em D = {FD2} N")
 
-#figure deformed configuration
-plt.figure(figsize=(10, 5))
-scale = 500  # Scale up deformation to see it clearly
 
-for element in model.elements_list:
-    n1 = element.node_i
-    n2 = element.node_j
-    
-    # Original Structure
-    plt.plot([model.nodes[n1][0], model.nodes[n2][0]],
-             [model.nodes[n1][1], model.nodes[n2][1]], 'bo-', alpha=0.8, label='Original' if element==model.elements_list[0] else "")
-    
-    # Deformed Structure
-    x_def = [model.nodes[n1][0] + u[2*n1]*scale, model.nodes[n2][0] + u[2*n2]*scale]
-    y_def = [model.nodes[n1][1] + u[2*n1+1]*scale, model.nodes[n2][1] + u[2*n2+1]*scale]
-    plt.plot(x_def, y_def, 'r--o', label=f'Deformada ({scale}x)' if element==model.elements_list[0] else "")
+# GRAPHIC VISUALIZATION
+visualizer = Visualize(model, scale=150)
 
-plt.title("Análise da Estrutura Deformada")
-plt.legend()
-plt.axis('off')
+fig, subplots = plt.subplots(1, 2, figsize=(18, 6))
+
+visualizer.plot_configuration(subplots[0], u, "Estrutura Deformada", show_legend=False)
+visualizer.plot_configuration(subplots[1], u_2, "Estrutura Deformada com uD_y = -2 mm", show_legend=True)
+
+fig.tight_layout()
 plt.show()
-
-
-

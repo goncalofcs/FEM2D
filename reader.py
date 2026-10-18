@@ -45,12 +45,12 @@ class Reader:
                     
                 elif section == "FORCES":
                     node_id = int(data[0])
-                    # Formato: nó; direção ('x' ou 'y'); valor
+                    # Format: node; direction ('x' or 'y'); value
                     if data[1].lower() in ("x", "y"):
                         direction = data[1].lower()
                         force_val = float(data[2])
                         self._forces.append((node_id, direction, force_val))
-                    # Formato: nó; Fx; Fy
+                    # Format: node; Fx; Fy
                     else:
                         fx = float(data[1])
                         fy = float(data[2])
@@ -59,12 +59,12 @@ class Reader:
                     
                 elif section == "BOUNDARY_CONDITIONS":
                     node_id = int(data[0])
-                    # Formato: nó; direção ('x' ou 'y'); valor
+                    # Format: node; direction ('x' or 'y'); value
                     if data[1].lower() in ("x", "y"):
                         direction = data[1].lower()
                         displacement = float(data[2])
                         self._boundary_conditions.append((node_id, direction, displacement))
-                    # Formato: nó; ux; uy
+                    # Format: node; ux; uy
                     elif len(data) >= 3:
                         ux = float(data[1])
                         uy = float(data[2])
