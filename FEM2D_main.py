@@ -152,20 +152,28 @@ for n in range(len(model.nodes)):
     nodes_def[n] = xf, yf
     
 # results presentation
-print("RESULTS")
+print("RESULTADOS")
 print("")
-print("Deslocamentos nodais")
+print("Coordenadas da configuração original")
 for n in range(len(model.nodes)):
-    disp_x = np.round(u[2*n] * 1e3, 3)
-    disp_y = np.round(u[2*n+1] * 1e3, 3)
-    print(f"node {n+1}: ux = {disp_x} mm, uy = {disp_y} mm")
+    x = model.nodes[n][0]
+    y = model.nodes[n][1]
+    print(f"Nó {n + 1}: ({x},{y}) m")
 print("")
 print("----//----")
 print("")
 print("Coordenadas da configuração deformada")
 for n in range(len(model.nodes)):
     x,y = np.round(nodes_def[n],6)
-    print(f"node {n+1}: ({x},{y}) m")
+    print(f"Nó {n+1}: ({x},{y}) m")
+print("")
+print("----//----")
+print("")
+print("Deslocamentos nodais")
+for n in range(len(model.nodes)):
+    disp_x = np.round(u[2*n] * 1e3, 3)
+    disp_y = np.round(u[2*n+1] * 1e3, 3)
+    print(f"Nó {n+1}: ux = {disp_x} mm, uy = {disp_y} mm")
 print("")
 print("----//----")
 print("")
@@ -173,52 +181,114 @@ print("Forças de reação (R)")
 for n in range(len(model.nodes)):
     reaction_x=np.round(R[2*n], 1)
     reaction_y=np.round(R[2*n+1], 1)
-    print(f"node {n+1}: ({reaction_x}, {reaction_y}) N")
+    print(f"Nó {n+1}: ({reaction_x}, {reaction_y}) N")
 print("")
 print("----//----")
 print("")
 print("Tensão (S11)")
 for n in range(len(model.elements_list)):
     stress=np.round(tensao[n]/1e6, 1)
-    print(f"element {n+1}: {stress} MPa")
-    
+    element = model.elements_list[n]
+    print(f"Elemento {n+1} ({element.node_i} --> {element.node_j}): {stress} MPa")
 print("")   
 print("")
 print("============//=============")
 print("============//=============")
 print("")
 
-model_2 = model
-model_2.add_boundary_conditions(3, 'y', -0.002) 
+# Second case: preserve the original forces and supports, and impose
+# an additional vertical displacement at node D (node ID 3).
+model_2 = FEM2D()
+model_2.nodes = {node_id: coordinates.copy() for node_id, coordinates in model.nodes.items()}
+model_2.elements_list = model.elements_list.copy()
+model_2.forces = model.forces.copy()
+model_2.boundary_conditions = model.boundary_conditions.copy()
+model_2.add_boundary_conditions(3, 'y', -0.002)
 u_2,R_2 = model_2.solve()
 
-print("Cálculo da força para uD_y= -2mm")
-print("O nó D é o node 4")
+print("Força para o deslocamento imposto uD_y = -2 mm")
+print("O nó D é o nó 4")
 # in calculus node 3
 FD2 = np.round(R_2[2*3+1],2)
-print(f"(assuming there is uD_x) FD = {FD2} N")
+print(f"Força em D = {FD2} N")
 
-#figure deformed configuration
-plt.figure(figsize=(10, 5))
-scale = 500  # Scale up deformation to see it clearly
+# GRAPHIC VISUALIZATION
+scale = 150  # Scale up deformation to see it clearly
 
-for element in model.elements_list:
-    n1 = element.node_i
-    n2 = element.node_j
-    
-    # Original Structure
-    plt.plot([model.nodes[n1][0], model.nodes[n2][0]],
-             [model.nodes[n1][1], model.nodes[n2][1]], 'bo-', alpha=0.8, label='Original' if element==model.elements_list[0] else "")
-    
-    # Deformed Structure
-    x_def = [model.nodes[n1][0] + u[2*n1]*scale, model.nodes[n2][0] + u[2*n2]*scale]
-    y_def = [model.nodes[n1][1] + u[2*n1+1]*scale, model.nodes[n2][1] + u[2*n2+1]*scale]
-    plt.plot(x_def, y_def, 'r--o', label=f'Deformada ({scale}x)' if element==model.elements_list[0] else "")
+def plot_configuration(ax, displacements, title):
+    for index, element in enumerate(model.elements_list):
+        n1 = element.node_i
+        n2 = element.node_j
 
-plt.title("Análise da Estrutura Deformada")
-plt.legend()
-plt.axis('off')
+        ax.plot(
+            [model.nodes[n1][0], model.nodes[n2][0]],
+            [model.nodes[n1][1], model.nodes[n2][1]],
+            color="steelblue", linewidth=1.8, marker="o", markersize=5,
+            markerfacecolor="white", markeredgewidth=1.5,
+            label="Original" if index == 0 else ""
+        )
+
+        x_def = [
+            model.nodes[n1][0] + displacements[2 * n1] * scale,
+            model.nodes[n2][0] + displacements[2 * n2] * scale
+        ]
+        y_def = [
+            model.nodes[n1][1] + displacements[2 * n1 + 1] * scale,
+            model.nodes[n2][1] + displacements[2 * n2 + 1] * scale
+        ]
+        ax.plot(
+            x_def, y_def, color="red", linestyle="--", linewidth=2,
+            marker="s", markersize=4.5,
+            label=f"Deformada ({scale}x)" if index == 0 else ""
+        )
+
+    for node_id, (x, y) in model.nodes.items():
+        ax.annotate(
+            str(node_id + 1), (x, y),
+            xytext=(-9, 7), textcoords="offset points",
+            color="midnightblue", fontsize=8, fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.85)
+        )
+
+        x_def = x + displacements[2 * node_id] * scale
+        y_def = y + displacements[2 * node_id + 1] * scale
+        ax.annotate(
+            str(node_id + 1), (x_def, y_def),
+            xytext=(6, -11), textcoords="offset points",
+            color="red", fontsize=8, fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.85)
+        )
+
+    for element in model.elements_list:
+        n1 = element.node_i
+        n2 = element.node_j
+        x1, y1 = model.nodes[n1]
+        x2, y2 = model.nodes[n2]
+        ax.annotate(
+            str(element.element_id + 1), ((x1 + x2) / 2, (y1 + y2) / 2),
+            xytext=(0, 5), textcoords="offset points",
+            color="steelblue", fontsize=8,
+            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.8)
+        )
+
+        x1 += displacements[2 * n1] * scale
+        y1 += displacements[2 * n1 + 1] * scale
+        x2 += displacements[2 * n2] * scale
+        y2 += displacements[2 * n2 + 1] * scale
+        ax.annotate(
+            str(element.element_id + 1), ((x1 + x2) / 2, (y1 + y2) / 2),
+            xytext=(0, -10), textcoords="offset points",
+            color="red", fontsize=8,
+            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.8)
+        )
+
+    ax.set_title(title)
+    ax.legend(frameon=True, facecolor="white", edgecolor="lightgray")
+    ax.axis("off")
+
+
+figure, axes = plt.subplots(1, 2, figsize=(18, 6))
+plot_configuration(axes[0], u, "Estrutura Deformada")
+plot_configuration(axes[1], u_2, "Estrutura Deformada um uD_y = -2 mm")
+figure.tight_layout()
 plt.show()
-
-
-
