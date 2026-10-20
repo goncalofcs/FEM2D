@@ -1,0 +1,313 @@
+********************************************************************************
+Field Output Report, written Sun Oct 18 17:58:24 2026
+
+Source 1
+---------
+
+   ODB: C:/Users/g05co/OneDrive/Ambiente de Trabalho/Gonçalo/Faculdade/3ªano(S1)/Mecânica e Modelação Computacional/Projetos/Trabalho Computacional 1/Abaqus/Job-3.odb
+   Step: Step-1
+   Frame: Increment      1: Step Time =    1.000
+
+Loc 1 : Integration point values from source 1
+
+Output sorted by column "Element Label".
+
+Field Output reported at integration points for part: PART-1-1
+
+   Element Label             Int         S.Mises
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1     2.27273E+06
+               2               1     10.0756E+06
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1     7.71104E+06
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1     10.0756E+06
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1     15.0061E+06
+
+
+  Minimum                            2.27273E+06
+      At Element                               1
+          Int Pt                               1
+
+  Maximum                            15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+           Total                     91.1621E+06
+
+
+   Element Label             Int     S.Max. In-P
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1              0.
+               2               1              0.
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1              0.
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1              0.
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1              0.
+
+
+  Minimum                                     0.
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                            11.4448E+06
+      At Element                               7
+          Int Pt                               1
+
+           Total                     46.0211E+06
+
+
+   Element Label             Int  S.Max. In-P(a)
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1    -2.27273E+06
+               2               1    -10.0756E+06
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1    -7.71104E+06
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1    -10.0756E+06
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1    -15.0061E+06
+
+
+  Minimum                           -15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                            11.4448E+06
+      At Element                               7
+          Int Pt                               1
+
+           Total                     880.046E+03
+
+
+   Element Label             Int     S.Min. In-P
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1    -2.27273E+06
+               2               1    -10.0756E+06
+               3               1              0.
+               4               1              0.
+               5               1    -7.71104E+06
+               6               1              0.
+               7               1              0.
+               8               1    -10.0756E+06
+               9               1              0.
+              10               1              0.
+              11               1    -15.0061E+06
+
+
+  Minimum                           -15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                                     0.
+      At Element                              10
+          Int Pt                               1
+
+           Total                    -45.1410E+06
+
+
+   Element Label             Int     S.Max. Prin
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1              0.
+               2               1              0.
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1              0.
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1              0.
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1              0.
+
+
+  Minimum                                     0.
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                            11.4448E+06
+      At Element                               7
+          Int Pt                               1
+
+           Total                     46.0211E+06
+
+
+   Element Label             Int  S.Max. Prin(a)
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1    -2.27273E+06
+               2               1    -10.0756E+06
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1    -7.71104E+06
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1    -10.0756E+06
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1    -15.0061E+06
+
+
+  Minimum                           -15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                            11.4448E+06
+      At Element                               7
+          Int Pt                               1
+
+           Total                     880.046E+03
+
+
+   Element Label             Int     S.Min. Prin
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1    -2.27273E+06
+               2               1    -10.0756E+06
+               3               1              0.
+               4               1              0.
+               5               1    -7.71104E+06
+               6               1              0.
+               7               1              0.
+               8               1    -10.0756E+06
+               9               1              0.
+              10               1              0.
+              11               1    -15.0061E+06
+
+
+  Minimum                           -15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                                     0.
+      At Element                              10
+          Int Pt                               1
+
+           Total                    -45.1410E+06
+
+
+   Element Label             Int        S.Tresca
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1     2.27273E+06
+               2               1     10.0756E+06
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1     7.71104E+06
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1     10.0756E+06
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1     15.0061E+06
+
+
+  Minimum                            2.27273E+06
+      At Element                               1
+          Int Pt                               1
+
+  Maximum                            15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+           Total                     91.1621E+06
+
+
+   Element Label             Int      S.Pressure
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1     757.576E+03
+               2               1     3.35852E+06
+               3               1    -1.27165E+06
+               4               1    -3.35852E+06
+               5               1     2.57035E+06
+               6               1    -1.78645E+06
+               7               1    -3.81493E+06
+               8               1     3.35852E+06
+               9               1    -1.42916E+06
+              10               1    -3.67965E+06
+              11               1     5.00205E+06
+
+
+  Minimum                           -3.81493E+06
+      At Element                               7
+          Int Pt                               1
+
+  Maximum                            5.00205E+06
+      At Element                              11
+          Int Pt                               1
+
+           Total                    -293.349E+03
+
+
+   Element Label             Int     S.Third Inv
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1    -2.27273E+06
+               2               1    -10.0756E+06
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1    -7.71104E+06
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1    -10.0756E+06
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1    -15.0061E+06
+
+
+  Minimum                           -15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                            11.4448E+06
+      At Element                               7
+          Int Pt                               1
+
+           Total                     880.046E+03
+
+
+   Element Label             Int           S.S11
+                              Pt          @Loc 1
+-------------------------------------------------
+               1               1    -2.27273E+06
+               2               1    -10.0756E+06
+               3               1     3.81494E+06
+               4               1     10.0756E+06
+               5               1    -7.71104E+06
+               6               1     5.35934E+06
+               7               1     11.4448E+06
+               8               1    -10.0756E+06
+               9               1     4.28747E+06
+              10               1     11.0390E+06
+              11               1    -15.0061E+06
+
+
+  Minimum                           -15.0061E+06
+      At Element                              11
+          Int Pt                               1
+
+  Maximum                            11.4448E+06
+      At Element                               7
+          Int Pt                               1
+
+           Total                     880.046E+03
+
+

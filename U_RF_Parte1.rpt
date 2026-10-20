@@ -1,0 +1,142 @@
+********************************************************************************
+Field Output Report, written Sun Oct 18 15:28:56 2026
+
+Source 1
+---------
+
+   ODB: C:/Users/g05co/Job-1.odb
+   Step: Step-1
+   Frame: Increment      1: Step Time =    1.000
+
+Loc 1 : Nodal values from source 1
+
+Output sorted by column "Node Label".
+
+Field Output reported at nodes for part: PART-1-1
+
+      Node Label    RF.Magnitude
+                          @Loc 1
+---------------------------------
+               1              0.
+               2              0.
+               3     5.22222E+03
+               4              0.
+               5              0.
+               6              0.
+               7     8.33630E+03
+
+
+  Minimum                     0.
+         At Node               6
+
+  Maximum            8.33630E+03
+         At Node               7
+
+           Total     13.5585E+03
+
+
+      Node Label          RF.RF1
+                          @Loc 1
+---------------------------------
+               1              0.
+               2              0.
+               3              0.
+               4              0.
+               5              0.
+               6              0.
+               7         -3.E+03
+
+
+  Minimum                -3.E+03
+         At Node               7
+
+  Maximum                     0.
+         At Node               6
+
+           Total         -3.E+03
+
+
+      Node Label          RF.RF2
+                          @Loc 1
+---------------------------------
+               1              0.
+               2              0.
+               3     5.22222E+03
+               4              0.
+               5              0.
+               6              0.
+               7     7.77778E+03
+
+
+  Minimum                     0.
+         At Node               6
+
+  Maximum            7.77778E+03
+         At Node               7
+
+           Total         13.E+03
+
+
+      Node Label     U.Magnitude
+                          @Loc 1
+---------------------------------
+               1     669.120E-06
+               2     335.161E-06
+               3     338.126E-06
+               4     509.082E-06
+               5     575.942E-06
+               6     643.587E-06
+               7              0.
+
+
+  Minimum                     0.
+         At Node               7
+
+  Maximum            669.120E-06
+         At Node               1
+
+           Total     3.07102E-03
+
+
+      Node Label            U.U1
+                          @Loc 1
+---------------------------------
+               1     282.457E-06
+               2     253.236E-06
+               3     338.126E-06
+               4     289.077E-06
+               5     381.599E-06
+               6     141.930E-06
+               7     3.00000E-33
+
+
+  Minimum            3.00000E-33
+         At Node               7
+
+  Maximum            381.599E-06
+         At Node               5
+
+           Total     1.68642E-03
+
+
+      Node Label            U.U2
+                          @Loc 1
+---------------------------------
+               1    -606.581E-06
+               2    -219.555E-06
+               3    -5.22222E-33
+               4    -419.045E-06
+               5    -431.384E-06
+               6    -627.742E-06
+               7    -7.77778E-33
+
+
+  Minimum           -627.742E-06
+         At Node               6
+
+  Maximum           -5.22222E-33
+         At Node               3
+
+           Total    -2.30431E-03
+
+
