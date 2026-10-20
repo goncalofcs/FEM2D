@@ -58,7 +58,7 @@ class FEM2D:
     def __init__ (self):
         self.nodes = {}
         self.elements_list = []
-        self. forces = {}
+        self.forces = {}
         self.boundary_conditions = {}
 
     def add_node(self, node, x, y):
@@ -165,7 +165,7 @@ print("----//----")
 print("")
 print("Coordenadas da configuração deformada")
 for n in range(len(model.nodes)):
-    x,y = np.round(nodes_def[n],6)
+    x,y = np.round(nodes_def[n], 6)
     print(f"Nó {n+1}: ({x},{y}) m")
 print("")
 print("----//----")
@@ -182,7 +182,7 @@ print("Forças de reação (R)")
 for n in range(len(model.nodes)):
     reaction_x=np.round(R[2*n], 2)
     reaction_y=np.round(R[2*n+1], 2)
-    print(f"Nó {n+1}: Rx = {reaction_x} N, Ry =  {reaction_y} N")
+    print(f"Nó {n+1}: Rx = {reaction_x} N, Ry = {reaction_y} N")
 print("")
 print("----//----")
 print("")
@@ -205,12 +205,12 @@ model_2.elements_list = model.elements_list.copy()
 model_2.forces = model.forces.copy()
 model_2.boundary_conditions = model.boundary_conditions.copy()
 model_2.add_boundary_conditions(3, 'y', -0.002)
-u_2,R_2 = model_2.solve()
+u_2, R_2 = model_2.solve()
 
 print("Força para o deslocamento imposto uD_y = -2 mm")
 print("O nó D é o nó 4")
 # in calculus node 3
-FD2 = np.round(R_2[2*3+1],0)
+FD2 = np.round(R_2[2*3+1], 0)
 print(f"Força em D = {FD2} N")
 
 
