@@ -224,3 +224,6 @@ visualizer.plot_configuration(subplots[1], u_2, "Estrutura Deformada com uD_y = 
 
 fig.tight_layout()
 plt.show()
+
+#já consigo trabalhar com vós informáticos nos projetos
+# quero deixar agradecimentos ao gemini por ser tão prestável
