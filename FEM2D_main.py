@@ -227,3 +227,4 @@ plt.show()
 
 #já consigo trabalhar com vós informáticos nos projetos
 # quero deixar agradecimentos ao gemini por ser tão prestável
+####
